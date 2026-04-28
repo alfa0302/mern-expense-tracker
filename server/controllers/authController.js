@@ -1,16 +1,16 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 const saltRounds = 10;
 
 const hashPassword = async (password) => {
-  const salt = bcrypt.genSalt(saltRounds);
+  const salt = await bcrypt.genSalt(saltRounds);
   return await bcrypt.hashSync(password, salt);
 };
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "7d",
   });
 };
 const registerUser = async (req, res) => {
@@ -71,10 +71,11 @@ const loginUser = async (req, res) => {
 };
 const getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.userId).select("-password");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    res.status(200).json(user);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });

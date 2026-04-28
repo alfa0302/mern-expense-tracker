@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const protect = async (req, res, next) => {
+  console.log("AUTH HEADER:", req.headers.authorization);
   let token;
   if (
     req.headers.authorization &&
@@ -12,12 +13,14 @@ const protect = async (req, res, next) => {
         return res.status(401).json({ message: "No token provided" });
       }
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user.id = decoded.id;
+      req.userId = decoded.id;
       next();
     } catch (error) {
       console.error(error);
       return res.status(401).json({ message: "Token invalid" });
     }
+  } else {
+    return res.status(401).json({ message: "Not authorized, no token" });
   }
 };
 
