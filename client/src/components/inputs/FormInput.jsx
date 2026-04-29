@@ -36,7 +36,7 @@ export default function FormInput({
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e)}
-          className="focus:outline-none bg-mint-cream"
+          className="focus:outline-none bg-mint-cream w-[100%] h-full"
         />
         <span
           onClick={() => {

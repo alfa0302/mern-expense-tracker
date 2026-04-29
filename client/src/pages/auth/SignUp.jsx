@@ -1,15 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import FormInput from "../../components/inputs/FormInput";
 import FileUpload from "../../components/inputs/FileUpload";
+import axiosInstance from "../../utils/axiosInstance";
+import { API_PATHS } from "../../utils/apiPaths";
+import { UserContext } from "../../context/UserContext";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
-    fullname: "",
+    fullName: "",
     email: "",
     password: "",
-    picture: null,
+    image: null,
   });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const { updateUser } = useContext(UserContext);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -26,9 +36,56 @@ export default function Signup() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    const { fullName, email, password, image } = formData;
+    setError("");
+    setLoading(true);
+    try {
+      if (!fullName) {
+        return setError("Name is required");
+      }
+      if (!email) {
+        return setError("Email is required");
+      }
+      if (!password) {
+        return setError("Password is required");
+      }
+      let imgResponse;
+      if (image) {
+        const formDataToSend = new FormData();
+        formDataToSend.append("image", image);
+        imgResponse = await axiosInstance.post(
+          API_PATHS.IMAGE.UPLOAD_IMAGE,
+          formDataToSend,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          },
+        );
+      }
+      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+        fullName,
+        email,
+        password,
+        profileImageUrl: imgResponse.data.imageUrl,
+      });
+      const { token, user } = response.data;
+      if (token) {
+        localStorage.setItem("token", token);
+        updateUser(user);
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("Something went wrong.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,12 +99,12 @@ export default function Signup() {
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-2 md:gap-5">
-          <FileUpload name="picture" onChange={handleChange} />
+          <FileUpload name="image" onChange={handleChange} />
           <FormInput
             type="text"
-            name="fullname"
+            name="fullName"
             placeholder="Enter full name"
-            value={formData.fullname}
+            value={formData.fullName}
             onChange={handleChange}
           />
 
@@ -68,11 +125,11 @@ export default function Signup() {
           />
 
           <button type="submit" className="btn-primary">
-            Sign Up
+            {!error && loading ? "please wait" : "sign up"}
           </button>
         </form>
-
-        <p className="desc mt-2 md:mt-4">
+        <p className="text-red-500 mt-3 text-sm">{error}</p>
+        <p className="desc mt-2">
           Already have an account?{" "}
           <a href="/login" className="text-deep">
             Log In

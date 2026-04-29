@@ -4,7 +4,6 @@ import { FaUser } from "react-icons/fa";
 export default function FileUpload({ name, onChange }) {
   const uploadRef = useRef(null);
   const [preview, setPreview] = useState(null);
-  console.log(preview);
 
   const selectFileUpload = () => {
     uploadRef.current.click();
@@ -15,7 +14,6 @@ export default function FileUpload({ name, onChange }) {
       const imageUrl = URL.createObjectURL(file);
       setPreview(imageUrl);
     }
-
     // propagating change to parent
     onChange(e);
   };
@@ -39,7 +37,6 @@ export default function FileUpload({ name, onChange }) {
         type="file"
         name={name}
         accept="image/*"
-        onChange={onChange}
         className="border rounded-md p-2 hidden"
         ref={uploadRef}
         onChange={handleFileChange}
