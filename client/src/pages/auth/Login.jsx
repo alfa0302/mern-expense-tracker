@@ -5,6 +5,7 @@ import FormInput from "../../components/inputs/FormInput";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
 import { UserContext } from "../../context/UserContext";
+import { isValidEmail } from "../../utils/helper";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -28,8 +29,8 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
-    if (!email) {
-      return setError("Email is required");
+    if (!email || !isValidEmail(email)) {
+      return setError("Valid email is required");
     }
     if (!password) {
       return setError("Password is required");
@@ -41,10 +42,10 @@ export default function Login() {
         email,
         password,
       });
-      const { token, user } = response.data;
+      const { token, userData } = response.data;
       if (token) {
         localStorage.setItem("token", token);
-        updateUser(user);
+        updateUser(userData);
         navigate("/dashboard");
       }
     } catch (error) {
@@ -80,7 +81,7 @@ export default function Login() {
             onChange={handleChange}
           />
           <button type="submit" className="btn-primary">
-            {!error && loading ? "please wait" : "Log in"}
+            {loading ? "please wait" : "Log in"}
           </button>
         </form>
         <p className="text-red-500 mt-3 text-sm">{error}</p>

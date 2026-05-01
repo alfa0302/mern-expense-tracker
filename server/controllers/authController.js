@@ -30,11 +30,14 @@ const registerUser = async (req, res) => {
       password: newPassword,
       profileImageUrl,
     });
-    res.status(201).json({
-      id: user._id,
+    const userData = {
       fullName,
       email,
       profileImageUrl,
+      id: user._id,
+    };
+    res.status(201).json({
+      userData,
       token: generateToken(user._id),
     });
   } catch (error) {
@@ -58,10 +61,14 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    res.status(200).json({
-      id: user._id,
+    const userData = {
       fullName: user.fullName,
       email: user.email,
+      profileImageUrl: user.profileImageUrl,
+      id: user._id,
+    };
+    res.status(200).json({
+      userData,
       token: generateToken(user._id),
     });
   } catch (error) {

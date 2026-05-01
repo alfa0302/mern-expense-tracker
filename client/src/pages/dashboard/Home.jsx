@@ -1,5 +1,76 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import DasbhoardLayout from "../../components/layouts/DashboardLayout";
+import axiosInstance from "../../utils/axiosInstance";
+import { API_PATHS } from "../../utils/apiPaths";
+import { useNavigate } from "react-router-dom";
+import { formatNumber } from "../../utils/helper";
+import InfoCard from "../../components/cards/InfoCard";
+import PageLoader from "../../components/PageLoader";
+import RecentTransactions from "../../components/dashboard/RecentTransactions";
+import { IoMdCard } from "react-icons/io";
+import { GiPayMoney, GiReceiveMoney, GiTakeMyMoney } from "react-icons/gi";
 
 export default function Home() {
-  return <div>Home</div>;
+  const [activeMenu, setActiveMenu] = useState("dashboard");
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const fetchDashboardData = async () => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get(API_PATHS.DASHBOARD.GET_DATA);
+      if (response.data) {
+        setDashboardData(response.data);
+      }
+    } catch (error) {
+      ccnsole.log("Something went wrong. Please try again", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchDashboardData();
+    return;
+  }, []);
+  if (!dashboardData) {
+    return <PageLoader title="Loading." />;
+  }
+  return (
+    <DasbhoardLayout activeMenu="Dashboard">
+      <div className="my-5 mx-auto">
+        <div className="grid md:grid-cols-3 grid-cols-1 gap-5 align-center">
+          <InfoCard
+            icon={
+              <GiTakeMyMoney className="text-white bg-deep rounded-full p-1 h-10 w-10" />
+            }
+            label="Total Balance"
+            value={formatNumber(dashboardData.totalBalance)}
+          />
+          <InfoCard
+            icon={
+              <GiReceiveMoney className="text-white bg-deep rounded-full p-1 h-10 w-10" />
+            }
+            label="Total Income"
+            value={formatNumber(dashboardData.totalIncome)}
+          />
+          <InfoCard
+            icon={
+              <GiPayMoney className="text-white bg-deep rounded-full p-1 h-10 w-10" />
+            }
+            label="Total Expense"
+            value={formatNumber(dashboardData.totalExpense)}
+          />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2  gap-5">
+          <RecentTransactions
+            transactions={dashboardData?.recentTransactions}
+            onSeeMore={() => navigate("/expense")}
+          />
+        </div>
+      </div>
+    </DasbhoardLayout>
+  );
 }

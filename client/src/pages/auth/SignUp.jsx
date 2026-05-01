@@ -6,6 +6,7 @@ import FileUpload from "../../components/inputs/FileUpload";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
 import { UserContext } from "../../context/UserContext";
+import { isValidEmail } from "../../utils/helper";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -45,7 +46,7 @@ export default function Signup() {
       if (!fullName) {
         return setError("Name is required");
       }
-      if (!email) {
+      if (!email || !isValidEmail(email)) {
         return setError("Email is required");
       }
       if (!password) {
@@ -71,10 +72,10 @@ export default function Signup() {
         password,
         profileImageUrl: imgResponse.data.imageUrl,
       });
-      const { token, user } = response.data;
+      const { token, userData } = response.data;
       if (token) {
         localStorage.setItem("token", token);
-        updateUser(user);
+        updateUser(userData);
         navigate("/dashboard");
       }
     } catch (error) {
@@ -125,7 +126,7 @@ export default function Signup() {
           />
 
           <button type="submit" className="btn-primary">
-            {!error && loading ? "please wait" : "sign up"}
+            {loading ? "please wait" : "sign up"}
           </button>
         </form>
         <p className="text-red-500 mt-3 text-sm">{error}</p>

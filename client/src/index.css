@@ -6,7 +6,8 @@
   --color-seafoam: rgb(104, 178, 160);
   --color-sage: rgb(205, 224, 201);
   --color-mint-cream: rgb(224, 236, 222);
-  --color-gray: rgb(122, 122, 122)
+  --color-gray: rgb(122, 122, 122);
+  --color-charcoal: rgb(54, 69, 79);
 }
 
 @layer base {
@@ -27,6 +28,14 @@
 
 .btn-primary {
   @apply bg-deep text-white uppercase rounded-full text-center py-1 cursor-pointer hover:bg-white hover:border hover:text-deep
+}
+
+.btn-secondary {
+  @apply bg-gray-200 text-charcoal flex items-center gap-2 text-sm px-2 rounded-full cursor-pointer
+}
+
+.btn-label {
+  @apply flex items-center gap-2 text-sm px-2 rounded-full
 }
 
 .desc {
