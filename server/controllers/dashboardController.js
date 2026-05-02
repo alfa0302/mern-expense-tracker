@@ -8,7 +8,6 @@ const getDashboardData = async (req, res) => {
     const userObjectId = new Types.ObjectId(String(userId));
     console.log("userId:", userId, "userObjId:", userObjectId);
 
-    // fetch Income and Expense data
     const totalIncome = await Income.aggregate([
       { $match: { userId: userObjectId } },
       { $group: { _id: null, total: { $sum: "$amount" } } },
@@ -27,27 +26,40 @@ const getDashboardData = async (req, res) => {
       userId: isValidObjectId(userId),
     });
 
-    const last60DaysIncomeTransactions = await Income.find({
+    const last60DaysIncomeTransactionsRaw = await Income.find({
       userId: userObjectId,
       date: { $gte: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) },
     }).sort({ date: -1 });
+
+    const last60DaysIncomeTransactions = last60DaysIncomeTransactionsRaw.map(
+      (txn) => ({
+        ...txn.toObject(),
+        type: "income",
+      }),
+    );
 
     const incomeLast60Days = last60DaysIncomeTransactions.reduce(
       (sum, income) => sum + income.amount,
       0,
     );
 
-    const last30DaysExpenseTransactions = await Expense.find({
+    const last30DaysExpenseTransactionsRaw = await Expense.find({
       userId: userObjectId,
       date: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
     }).sort({ date: -1 });
+
+    const last30DaysExpenseTransactions = last30DaysExpenseTransactionsRaw.map(
+      (txn) => ({
+        ...txn.toObject(),
+        type: "expense",
+      }),
+    );
 
     const expenseLast30Days = last30DaysExpenseTransactions.reduce(
       (sum, expense) => sum + expense.amount,
       0,
     );
 
-    // Fetch last 5 transactions
     const incomeTxns = await Income.find({ userId: userObjectId })
       .sort({ date: -1 })
       .limit(5);
@@ -67,7 +79,6 @@ const getDashboardData = async (req, res) => {
       })),
     ].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // final respnse
     res.status(200).json({
       totalBalance:
         (totalIncome[0]?.total || 0) - (totalExpense[0]?.total || 0),

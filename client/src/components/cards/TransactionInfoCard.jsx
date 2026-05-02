@@ -25,7 +25,7 @@ export default function TransactionInfoCard({ transaction }) {
         </div>
       </div>
       <div
-        className={`btn-label ${transaction.type === "income" ? "bg-green-100 text-deep " : "bg-red-100 text-red-500 "}`}
+        className={`btn-label w-20 ${transaction.type === "income" ? "bg-green-100 text-deep " : "bg-red-100 text-red-500 "}`}
       >
         <div>
           <span>{transaction.type === "income" ? "+" : "-"}</span>

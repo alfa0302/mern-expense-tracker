@@ -6,7 +6,7 @@ export default function Navbar({ activeMenu }) {
   const [openSideMenu, setOpenSideMenu] = useState(false);
 
   return (
-    <header className="m-5 bg-white py-5 px-10 rounded-full text-charcoal">
+    <header className="m-5  px-10  text-charcoal">
       <div className="flex items-center gap-3">
         <button
           onClick={() => setOpenSideMenu((prev) => !prev)}
