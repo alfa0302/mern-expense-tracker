@@ -9,11 +9,20 @@ import Expense from "./pages/dashboard/Expense";
 import axiosInstance from "./utils/axiosInstance";
 import { API_PATHS } from "./utils/apiPaths";
 import PageLoader from "./components/PageLoader";
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
   return (
     <UserProvider>
       <MainApp />
+      <Toaster
+        toastOptions={{
+          className: "",
+          style: {
+            fontSize: "13px",
+          },
+        }}
+      />
     </UserProvider>
   );
 }

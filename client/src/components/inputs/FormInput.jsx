@@ -12,7 +12,7 @@ export default function FormInput({
   const [showPass, setShowPass] = useState(false);
   if (type !== "password") {
     return (
-      <div className="text-deep bg-mint-cream text-sm p-2 rounded-lg">
+      <div className="text-deep bg-mint-cream text-sm p-2 rounded-lg flex">
         {/* <label htmlFor={name} className="">{title}</label> */}
         <input
           type={type}
@@ -21,7 +21,7 @@ export default function FormInput({
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e)}
-          className="focus:outline-none bg-mint-cream"
+          className="focus:outline-none bg-mint-cream flex-1"
         />
       </div>
     );

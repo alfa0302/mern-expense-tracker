@@ -14,7 +14,9 @@ export default function TransactionInfoCard({ transaction }) {
       <div className="flex gap-5 items-center">
         <div>
           {transaction.icon ? (
-            <img src={transaction.icon} alt="icon" />
+            <div className="rounded-full h-10 w-10 p-1 flex justify-center items-center bg-gray-300 text-2xl">
+              {transaction.icon}
+            </div>
           ) : (
             <LuUtensils className="text-white rounded-full bg-deep h-9 w-9 p-2" />
           )}

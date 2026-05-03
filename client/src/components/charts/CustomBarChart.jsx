@@ -34,13 +34,13 @@ export default function CustomBarChart({ transactions }) {
     .reverse();
 
   return (
-    <div className="bg-white my-10 rounded-lg w-full">
+    <div className="bg-white rounded-lg w-full">
       <div className="h-70 w-full">
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
-              margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+              margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
