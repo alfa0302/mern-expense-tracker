@@ -7,7 +7,11 @@ import {
 } from "react-icons/lu";
 import moment from "moment";
 
-export default function TransactionInfoCard({ transaction }) {
+export default function TransactionInfoCard({
+  transaction,
+  hideDeleteBtn,
+  onDelete,
+}) {
   const formattedDate = moment(transaction.date).format("DD MMM YYYY");
   return (
     <div className="flex justify-between items-center mt-5">
@@ -26,15 +30,26 @@ export default function TransactionInfoCard({ transaction }) {
           <div className="text-gray text-sm">{formattedDate}</div>
         </div>
       </div>
-      <div
-        className={`btn-label w-20 ${transaction.type === "income" ? "bg-green-100 text-deep " : "bg-red-100 text-red-500 "}`}
-      >
-        <div>
-          <span>{transaction.type === "income" ? "+" : "-"}</span>
-          <span>{transaction.amount}</span>
-        </div>
+      <div className="flex gap-10">
+        {!hideDeleteBtn && (
+          <button onClick={() => onDelete(transaction._id)}>
+            <LuTrash2 className="text-2xl text-red-500 hover:bg-gray-300 rounded-full p-1 cursor-pointer" />
+          </button>
+        )}
+        <div
+          className={`btn-label w-20 ${transaction.type === "income" ? "bg-green-100 text-deep " : "bg-red-100 text-red-500 "}`}
+        >
+          <div>
+            <span>{transaction.type === "income" ? "+" : "-"}</span>
+            <span>{transaction.amount}</span>
+          </div>
 
-        {transaction.type === "income" ? <LuTrendingUp /> : <LuTrendingDown />}
+          {transaction.type === "income" ? (
+            <LuTrendingUp />
+          ) : (
+            <LuTrendingDown />
+          )}
+        </div>
       </div>
     </div>
   );

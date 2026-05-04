@@ -5,6 +5,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
 import Modal from "../../components/Modal";
 import AddIncomeForm from "../../components/income/AddIncomeForm";
+import IncomeList from "../../components/income/IncomeList";
 import toast from "react-hot-toast";
 
 export default function Income() {
@@ -27,7 +28,7 @@ export default function Income() {
     setLoading(true);
     try {
       const response = await axiosInstance.get(API_PATHS.INCOME.GET_ALL_INCOME);
-      setIncomeData(response.data);
+      setIncomeData(response.data.allIncome);
     } catch (error) {
       console.log(error, "Something went wrong");
     } finally {
@@ -67,23 +68,56 @@ export default function Income() {
       [name]: value,
     }));
   };
-  const deleteIncomeData = async () => {};
+  const deleteIncomeData = async (id) => {
+    try {
+      const response = await axiosInstance.delete(
+        API_PATHS.INCOME.DELETE_INCOME(id),
+      );
+      fetchIncomeData();
+      toast.success("Income Successfully Deleted");
+    } catch (error) {
+      console.log(error, "Something went wrong");
+    }
+  };
   const downloadIncomeData = async () => {
     try {
-    } catch (error) {}
+      const response = await axiosInstance.get(
+        API_PATHS.INCOME.DOWNLOAD_INCOME,
+        { responseType: "blob" },
+      );
+      const blob = new Blob([response.data]);
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "income_details.xlsx";
+      document.body.appendChild(link);
+      link.click();
+
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success("Income data downloaded.");
+    } catch (error) {
+      console.log(error, "Something went wrong");
+    }
   };
   useEffect(() => {
     fetchIncomeData();
   }, []);
   return (
     <DashboardLayout activeMenu="Income">
-      <div className="mx-auto">
+      <div className="mx-auto mb-10">
         <div className="grid grid-cols-1 gap-6">
           <IncomeOverview
-            transactions={incomeData?.allIncome}
+            transactions={incomeData}
             addIncome={() => setOpenAddIncomeModal(true)}
           />
         </div>
+        <IncomeList
+          transactions={incomeData}
+          onDelete={(id) => deleteIncomeData(id)}
+          onDownload={downloadIncomeData}
+        />
         <Modal
           isOpen={openAddIncomeModal}
           onClose={() => setOpenAddIncomeModal(false)}

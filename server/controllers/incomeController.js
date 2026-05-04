@@ -47,7 +47,7 @@ const downloadIncomeExcel = async (req, res) => {
   try {
     const allIncome = await Income.find({ userId }).sort({ date: -1 });
     const formattedData = allIncome.map((item) => ({
-      Date: item.date,
+      Date: new Date(item.date).toLocaleDateString(),
       Source: item.source,
       Income: item.amount,
     }));
