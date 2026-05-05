@@ -12,10 +12,7 @@ export default function Income() {
   const [openAddIncomeModal, setOpenAddIncomeModal] = useState(false);
   const [incomeData, setIncomeData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [openDeleteAlert, setOpenDeleteAlert] = useState({
-    show: false,
-    data: null,
-  });
+
   const [formData, setFormData] = useState({
     source: "",
     amount: 0,
