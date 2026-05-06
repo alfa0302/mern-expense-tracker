@@ -23,7 +23,11 @@ export default function SideMenu({ activeMenu }) {
     <aside className="m-2 bg-white h-full rounded-2xl md:flex flex-col py-10 px-5 hidden ">
       <div className="flex flex-col items-center">
         {user.profileImageUrl ? (
-          <img src={user.profileImageUrl} alt="profile picture" />
+          <img
+            src={user.profileImageUrl}
+            alt="profile picture"
+            className="h-14 w-14 rounded-full"
+          />
         ) : (
           <FaUser className="h-14 w-14 text-deep rounded-full border-deep border p-1" />
         )}

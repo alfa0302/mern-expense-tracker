@@ -79,7 +79,7 @@ export default function CustomBarChart({ transactions }) {
           </ResponsiveContainer>
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-gray-400">
-            <p>No expense data for this period.</p>
+            <p>No data for this period.</p>
           </div>
         )}
       </div>
